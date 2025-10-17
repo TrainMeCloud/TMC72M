@@ -1,0 +1,41 @@
+{
+  "name" : "derivedcolumn",
+  "jobMode" : "VISUAL",
+  "description" : "",
+  "role" : "arn:aws:iam::050381399004:role/service-role/AWSGlueServiceRole-GlueaccessingS3",
+  "executionProperty" : {
+    "maxConcurrentRuns" : 1
+  },
+  "command" : {
+    "name" : "glueetl",
+    "scriptLocation" : "s3://aws-glue-assets-050381399004-ap-south-1/scripts/derivedcolumn.py",
+    "pythonVersion" : "3"
+  },
+  "defaultArguments" : {
+    "--enable-metrics" : "true",
+    "--enable-spark-ui" : "true",
+    "--extra-py-files" : "s3://aws-glue-studio-transforms-584702181950-prod-ap-south-1/gs_common.py,s3://aws-glue-studio-transforms-584702181950-prod-ap-south-1/gs_derived.py",
+    "--spark-event-logs-path" : "s3://aws-glue-assets-050381399004-ap-south-1/sparkHistoryLogs/",
+    "--enable-job-insights" : "true",
+    "--enable-observability-metrics" : "true",
+    "--enable-glue-datacatalog" : "true",
+    "--job-bookmark-option" : "job-bookmark-disable",
+    "--job-language" : "python",
+    "--TempDir" : "s3://aws-glue-assets-050381399004-ap-south-1/temporary/"
+  },
+  "maxRetries" : 0,
+  "allocatedCapacity" : 2,
+  "timeout" : 480,
+  "maxCapacity" : 2.0,
+  "glueVersion" : "5.0",
+  "numberOfWorkers" : 2,
+  "workerType" : "G.1X",
+  "executionClass" : "STANDARD",
+  "codeGenConfigurationNodes" : "{\"node-1760409788781\":{\"CatalogSource\":{\"Database\":\"tmc72m\",\"Name\":\"Aggregate Data Catalog\",\"PartitionPredicate\":\"\",\"Table\":\"aggregate\"}},\"node-1760410086352\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"EvaluationContext\":\"EvaluateDataQuality_node1760409763147\",\"IsEnabled\":true},\"Compression\":\"none\",\"Format\":\"csv\",\"Inputs\":[\"node-1760584093102\"],\"Name\":\"Amazon S3\",\"NumberTargetPartitions\":\"1\",\"PartitionKeys\":[],\"Path\":\"s3://tmc27m/destinationfolder/derivedcolumn/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}},\"node-1760409873250\":{\"Aggregate\":{\"Aggs\":[{\"AggFunc\":\"sum\",\"Column\":[\"sales\"]}],\"Groups\":[[\"agencyname\"]],\"Inputs\":[\"node-1760409788781\"],\"Name\":\"Aggregate\"}},\"node-1760584093102\":{\"DynamicTransform\":{\"FunctionName\":\"gs_derived\",\"Inputs\":[\"node-1760584574987\"],\"Name\":\"Derived Column\",\"Parameters\":[{\"IsOptional\":false,\"Name\":\"colName\",\"Type\":\"str\",\"Value\":[\"Description\"]},{\"IsOptional\":false,\"Name\":\"expr\",\"Type\":\"str\",\"Value\":[\"CASE WHEN turnover > 200 THEN 'Sale is greater than 200' ELSE 'Sale is less than or equal to 200' END\"]}],\"Path\":\"s3://aws-glue-studio-transforms-584702181950-prod-ap-south-1/gs_derived.py\",\"TransformName\":\"gs_derived\",\"Version\":\"1.0.0\"}},\"node-1760584574987\":{\"RenameField\":{\"Inputs\":[\"node-1760409873250\"],\"Name\":\"Rename Field\",\"SourcePath\":[\"sum(sales)\"],\"TargetPath\":[\"turnover\"]}}}",
+  "sourceControlDetails" : {
+    "provider" : "GITHUB",
+    "repository" : "TMC72M",
+    "branch" : "main",
+    "folder" : "derivedcolumn"
+  }
+}
